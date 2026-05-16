@@ -1,0 +1,21 @@
+﻿=== NET-ZERO SIZING ANALYSIS ===
+Parameter,Value,Unit
+Campus Peak Load,11112.8,kW
+Annual Energy Demand,58408878.0,kWh/yr
+Existing PV Capacity,400.0,kW
+Existing Annual Generation,665760.0,kWh/yr
+Annual Energy Deficit,57743118.0,kWh/yr
+Additional PV Required,34693.05,kW
+Total PV for Net-Zero,35093.05,kW
+Current Energy Independence,1.1,%
+,,
+=== ECONOMICS ===,,
+Additional PV Investment,1561187401.0,INR
+Annual Electricity Savings,433073385.0,INR/yr
+Net Annual Saving (after O&M),405318942.0,INR/yr
+Simple Payback Period,3.9,years
+,,
+=== ENVIRONMENT ===,,
+CO2 Avoided (existing PV),545.9,tonnes/yr
+CO2 Avoided at Net-Zero,47895.3,tonnes/yr
+CO2 Avoided over 25 years,1197382.0,tonnes

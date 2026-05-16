@@ -1,0 +1,164 @@
+import streamlit as st
+import pandas as pd
+import plotly.graph_objects as go
+import glob
+import os
+import time   # ← ADDED
+
+# =====================================================
+# PAGE CONFIG
+# =====================================================
+st.set_page_config(page_title="Solar Power Dashboard", layout="wide")
+
+# =====================================================
+# AUTO REFRESH (EVERY 10 MINUTES)  ← ADDED
+# =====================================================
+REFRESH_INTERVAL = 30  # 10 minutes in seconds
+
+if "last_refresh" not in st.session_state:
+    st.session_state.last_refresh = time.time()
+
+if time.time() - st.session_state.last_refresh > REFRESH_INTERVAL:
+    st.session_state.last_refresh = time.time()
+    st.experimental_rerun()
+
+# =====================================================
+# TITLE
+# =====================================================
+st.title("☀️ Solar Power Plant Monitoring Dashboard")
+st.caption("MIIC-wise Power Curves (Exact iSolarCloud Style)")
+
+# =====================================================
+# PATHS
+# =====================================================
+BASE_DIR = "isolar_data"
+MIIC1_PATH = os.path.join(BASE_DIR, "miic1", "*")
+MIIC2_PATH = os.path.join(BASE_DIR, "miic2", "*")
+
+# =====================================================
+# LOAD FILE (ROBUST)
+# =====================================================
+def load_latest_file(path, label):
+    files = sorted(glob.glob(path))
+    if not files:
+        st.error(f"❌ No files found for {label}")
+        st.stop()
+
+    file = files[-1]
+
+    try:
+        return pd.read_excel(file)
+    except Exception:
+        pass
+
+    for enc in ["utf-8", "latin1", "cp1252"]:
+        try:
+            df = pd.read_csv(file, encoding=enc, engine="python")
+            if df.shape[1] > 1:
+                return df
+        except Exception:
+            continue
+
+    st.error(f"❌ Unable to read {label} file")
+    st.stop()
+
+# =====================================================
+# NORMALIZE DATA
+# =====================================================
+def normalize_df(df):
+    df.columns = [str(c).strip().lower() for c in df.columns]
+
+    time_col = next(c for c in df.columns if "time" in c)
+    dc_col   = next(c for c in df.columns if "dc" in c)
+    ac_col   = next(c for c in df.columns if "active" in c or "ac" in c)
+
+    df[time_col] = pd.to_datetime(df[time_col], errors="coerce")
+    df = df.dropna(subset=[time_col])
+    df = df.sort_values(time_col)
+
+    return df, time_col, dc_col, ac_col
+
+# =====================================================
+# LOAD DATA
+# =====================================================
+df1 = load_latest_file(MIIC1_PATH, "MIIC-1")
+df2 = load_latest_file(MIIC2_PATH, "MIIC-2")
+
+df1, t1, dc1, ac1 = normalize_df(df1)
+df2, t2, dc2, ac2 = normalize_df(df2)
+
+# =====================================================
+# PLOT FUNCTION
+# =====================================================
+def plot_miic(df, time_col, dc_col, ac_col, miic_label):
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=df[time_col],
+        y=df[dc_col],
+        name="Total DC Power",
+        mode="lines",
+        line=dict(color="#FF8A00", width=2),
+        fill="tozeroy",
+        fillcolor="rgba(255,138,0,0.35)",
+        hovertemplate=
+            "%{x|%d/%b/%Y %H:%M}<br>"
+            f"🟠 {miic_label}/Total DC power: %{{y:.1f}} (kW)"
+            "<extra></extra>"
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=df[time_col],
+        y=df[ac_col],
+        name="Total active power",
+        mode="lines",
+        line=dict(color="#2F7BFF", width=3),
+        hovertemplate=
+            "%{x|%d/%b/%Y %H:%M}<br>"
+            f"🔵 {miic_label}/Total active power: %{{y:.1f}} (kW)"
+            "<extra></extra>"
+    ))
+
+    fig.update_layout(
+        height=480,
+        title=f"{miic_label} Power Curve",
+        hovermode="x unified",
+        xaxis_title="Time",
+        yaxis_title="Power (kW)",
+        legend=dict(
+            orientation="h",
+            y=-0.25,
+            x=0.5,
+            xanchor="center"
+        )
+    )
+
+    return fig
+
+# =====================================================
+# DASHBOARD LAYOUT
+# =====================================================
+left, right = st.columns(2)
+
+with left:
+    st.subheader("🔹 MIIC-1")
+    st.plotly_chart(
+        plot_miic(df1, t1, dc1, ac1, "MIIC 1"),
+        use_container_width=True
+    )
+
+with right:
+    st.subheader("🔹 MIIC-2")
+    st.plotly_chart(
+        plot_miic(df2, t2, dc2, ac2, "MIIC 2"),
+        use_container_width=True
+    )
+
+# =====================================================
+# RAW DATA
+# =====================================================
+with st.expander("📄 View Raw Data"):
+    st.write("MIIC-1 Data")
+    st.dataframe(df1)
+    st.write("MIIC-2 Data")
+    st.dataframe(df2)
