@@ -61,11 +61,11 @@ def download_file(page, plant_name, folder_name):
 # MAIN SCRIPT
 # =========================
 with sync_playwright() as p:
-    browser = p.chromium.launch(headless=False)
-
+    browser = p.chromium.launch(headless=True)
     context = browser.new_context(
         storage_state="session.json",
-        accept_downloads=True
+        accept_downloads=True,
+        ignore_https_errors=True
     )
 
     page = context.new_page()

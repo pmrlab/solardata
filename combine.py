@@ -618,7 +618,8 @@ def render_dashboard_content(current_date):
                     st.plotly_chart(
                         small_plot(df, t, dc, ac, plant_name=name),
                         use_container_width=True,
-                        config={'displayModeBar': False}
+                        config={'displayModeBar': False},
+                        key=f"iso_plant_{i}_{name}"
                     )
 
     # ── RIGHT: CHART + KPIs ──
@@ -792,7 +793,8 @@ def render_havells_content(current_date):
                     st.plotly_chart(
                         small_plot(df, t, dc, ac, plant_name=name),
                         use_container_width=True,
-                        config={'displayModeBar': False}
+                        config={'displayModeBar': False},
+                        key=f"hav_plant_{i}_{name}"
                     )
 
     # ── RIGHT: aggregated chart + KPIs ──
