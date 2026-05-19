@@ -650,7 +650,7 @@ st.markdown(f"""
         <div class="hdr-name-pill">🏛 MNIT Jaipur</div>
     </div>
     <div class="hdr-center">
-        <div class="hdr-inst">Centre for Energy &amp; Environment · MNIT Jaipur</div>
+        <div class="hdr-inst">ELECTRICAL ENGINEERING DEPARTMENT· MNIT Jaipur</div>
         <div class="hdr-title">Pathways to Net Zero <br><span class="accent">by PMR LAB</span> 🌍</div>
         <div class="hdr-sub">Distributed Solar Generation Monitoring — MNIT Jaipur Campus</div>
         <div class="hdr-badge">
