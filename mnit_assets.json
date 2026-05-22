@@ -1,0 +1,114 @@
+[
+  {
+    "name": "Electronic 1",
+    "type": "solar",
+    "lat": 26.8610,
+    "lon": 75.8160,
+    "capacity_kw": 20
+  },
+  {
+    "name": "Electronic 2",
+    "type": "solar",
+    "lat": 26.8613,
+    "lon": 75.8163,
+    "capacity_kw": 15
+  },
+  {
+    "name": "MIIC-1",
+    "type": "solar",
+    "lat": 26.8620,
+    "lon": 75.8170,
+    "capacity_kw": 30
+  },
+  {
+    "name": "MIIC-2",
+    "type": "solar",
+    "lat": 26.8617,
+    "lon": 75.8168,
+    "capacity_kw": 30
+  },
+  {
+    "name": "Multipath 1",
+    "type": "solar",
+    "lat": 26.8608,
+    "lon": 75.8155,
+    "capacity_kw": 10
+  },
+  {
+    "name": "Multipath 2",
+    "type": "solar",
+    "lat": 26.8605,
+    "lon": 75.8158,
+    "capacity_kw": 10
+  },
+  {
+    "name": "Multipath 3",
+    "type": "solar",
+    "lat": 26.8602,
+    "lon": 75.8161,
+    "capacity_kw": 15
+  },
+  {
+    "name": "Multipath 4",
+    "type": "solar",
+    "lat": 26.8599,
+    "lon": 75.8164,
+    "capacity_kw": 20
+  },
+  {
+    "name": "Multipath 5",
+    "type": "solar",
+    "lat": 26.8596,
+    "lon": 75.8167,
+    "capacity_kw": 20
+  },
+  {
+    "name": "Prabha 01",
+    "type": "solar",
+    "lat": 26.8625,
+    "lon": 75.8175,
+    "capacity_kw": 25
+  },
+  {
+    "name": "Prabha 02",
+    "type": "solar",
+    "lat": 26.8628,
+    "lon": 75.8178,
+    "capacity_kw": 25
+  },
+  {
+    "name": "VLTC 1",
+    "type": "solar",
+    "lat": 26.8632,
+    "lon": 75.8182,
+    "capacity_kw": 30
+  },
+  {
+    "name": "VLTC 2",
+    "type": "solar",
+    "lat": 26.8635,
+    "lon": 75.8185,
+    "capacity_kw": 30
+  },
+  {
+    "name": "VLTC 3",
+    "type": "solar",
+    "lat": 26.8638,
+    "lon": 75.8188,
+    "capacity_kw": 30
+  },
+  {
+    "name": "Transformer T1",
+    "type": "transformer",
+    "lat": 26.8618,
+    "lon": 75.8158,
+    "capacity_kw": null
+  },
+  {
+    "name": "Transformer T2",
+    "type": "transformer",
+    "lat": 26.8630,
+    "lon": 75.8172,
+    "capacity_kw": null
+  }
+]

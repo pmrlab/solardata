@@ -1,0 +1,6 @@
+streamlit
+pandas
+folium
+streamlit-folium
+requests
+# (Add any other libraries you import at the top of your python scripts)
