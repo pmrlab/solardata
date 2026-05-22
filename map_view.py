@@ -38,7 +38,7 @@ def render_campus_map(valid_isolar=None, valid_havells=None,
     peak_ac_kw   = 0.0
     daily_kwh    = 0.0
     active_count = 0
-    total_plant_count ="20"
+    total_plant_count = solar_count
 
     for source in [valid_isolar, valid_havells]:
         if not source:
