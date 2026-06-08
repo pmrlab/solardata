@@ -29,21 +29,17 @@ for f in FOLDERS.values():
     os.makedirs(f, exist_ok=True)
 
 # =========================
-# DOWNLOAD HELPER (UPDATED)
+# DOWNLOAD HELPER
 # =========================
 def download_csv(page, folder, prefix):
     with page.expect_download() as d:
-        page.locator(".icon-G2_Download_24").click()
+        page.locator(".icon-G2_Download_24").click(force=True)
 
     download = d.value
 
     # 🔥 ONLY DATE (overwrite same day)
     filename = f"{prefix}_{datetime.now().strftime('%Y%m%d')}.csv"
     path = os.path.join(folder, filename)
-
-    # 🔥 remove old file if exists
-    if os.path.exists(path):
-        os.remove(path)
 
     download.save_as(path)
     print(f"✅ Updated (overwritten): {path}")

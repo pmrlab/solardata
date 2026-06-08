@@ -29,7 +29,9 @@ def download_file(page, plant_name, folder_name):
 
     locator = page.get_by_text(plant_name)
     locator.scroll_into_view_if_needed()
-    locator.click()
+    
+    # 🔥 FIXED: Correct Python syntax for force-clicking
+    locator.click(force=True)
 
     page.wait_for_timeout(3000)
 
