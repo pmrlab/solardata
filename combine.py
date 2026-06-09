@@ -19,7 +19,7 @@ from energy_map_module import get_energy_map_html
 # =====================================================
 st.set_page_config(
     layout="wide",
-    page_title="SolarVeda — PMR Lab, MNIT Jaipur",
+    page_title="SolUrja",
     page_icon="☀️",
     initial_sidebar_state="collapsed"
 )
@@ -844,6 +844,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);ove
   background: rgba(255, 255, 255, 0.45) !important; /* Elegant light glass */
   border-color: rgba(255,255,255,.3);
   box-shadow: 0 8px 32px rgba(0,0,0,.15);
+  #fnav.scrolled .brand-name {
+  color: var(--dark) !important;
+}
+#fnav.scrolled .brand-name span {
+  color: var(--sun) !important;
+}
 }
 
 .ni{position:relative}
@@ -856,6 +862,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);ove
 }
 .nb:hover,.nb.act{color:var(--sun);background:rgba(13,148,136,.10)}
 #fnav.scrolled .nb:hover,#fnav.scrolled .nb.act{color:var(--black);background:rgba(13,148,136,.15)}
+.spage-open #hdr{background:rgba(255,255,255,0.95)!important;}
+.spage-open .brand-name{color:var(--dark)!important;}
+.spage-open .brand-name span{color:#FBBF24!important;}
+.spage-open .brand-tagline,.spage-open .brand-dept{color:var(--muted)!important;}
 .nb.cta{background:var(--sun);color:#fff !important;font-weight:700;box-shadow:0 2px 12px rgba(13,148,136,.4)}
 .nb.cta:hover{background:#0f766e;transform:translateY(-1px)}
 
@@ -1352,15 +1362,15 @@ footer a { color: #fff; text-decoration: underline; }
     <button class="nb" id="dd-btn">Dashboard ▾</button>
     <div class="nd" id="dd-menu">
       <button class="ndi" onclick="openSP('power-statistics')">
-        ⚡ Power Statistics
+        Power Statistics
         <span class="ndi-sub">iSolar, Havells & Combined data</span>
       </button>
       <button class="ndi" onclick="openSP('energy-map')">
-        🗺️ Energy Map
+        Energy Map
         <span class="ndi-sub">Block & real campus map</span>
       </button>
       <button class="ndi" onclick="openSP('transport')">
-        🚗 EV Transport
+        EV Transport
         <span class="ndi-sub">Charging stations & trip planner</span>
       </button>
     </div>
@@ -1871,7 +1881,7 @@ footer a { color: #fff; text-decoration: underline; }
 
 
 <footer>
-  <div>© 2026 <strong>SolarVeda — PMR Lab, MNIT Jaipur</strong>. All rights reserved.</div>
+  <div>© 2026 <strong>SolUrja ☀️</strong>. All rights reserved.</div>
   <div style="margin-top:6px">Electrical Engineering Department · Malaviya National Institute of Technology Jaipur, Rajasthan – 302017</div>
   <div style="margin-top:6px">Supported by <strong>HEFA Scheme, Govt. of India</strong> · Built for the <em>Pathways to Net Zero</em> Initiative</div>
   <div style="margin-top:8px"><a href="mailto:pmrmnit@gmail.com">📧 pmrmnit@gmail.com</a> · <a href="https://www.linkedin.com/in/pmr-lab-mnit-jaipur" target="_blank">🔗 LinkedIn</a></div>
@@ -1991,20 +2001,21 @@ function goHomeAndScroll(id) {
 }
 
 function openSP(id){
-  // Close ALL sub-pages first, then open the requested one
   ['power-statistics','energy-map','transport'].forEach(x=>{
     document.getElementById('sp-'+x).classList.remove('open');
   });
   document.getElementById('sp-'+id).classList.add('open');
+  document.body.classList.add('spage-open');
   ddWrap.classList.remove('dd-open');
   if(id==='power-statistics') setTimeout(initCharts,120);
   if(id==='transport') setTimeout(initEVMap, 300);
   if(id==='energy-map') setTimeout(initMapCharts,120);
 }
-function closeSP(id){document.getElementById('sp-'+id).classList.remove('open')}
+function closeSP(id){document.getElementById('sp-'+id).classList.remove('open');document.body.classList.remove('spage-open')}
 
 function gHome(){
   ['power-statistics','energy-map','transport'].forEach(x=>document.getElementById('sp-'+x).classList.remove('open'));
+  document.body.classList.remove('spage-open');
 }
 
 function switchMode(m){

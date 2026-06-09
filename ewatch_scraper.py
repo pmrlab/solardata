@@ -137,6 +137,15 @@ def cleanup_debug_images():
             except: pass
     print("🧹 Debug images cleaned up")
 
+def delete_old_files(prefix: str):
+    """Delete any existing files matching prefix_*.xls/xlsx in SAVE_DIR"""
+    for fname in os.listdir(SAVE_DIR):
+        if fname.startswith(prefix) and fname.endswith((".xls", ".xlsx")):
+            try:
+                os.remove(os.path.join(SAVE_DIR, fname))
+                print(f"  🗑️  Deleted old: {fname}")
+            except: pass    
+
 # ─────────────────────────────────────────
 # LOGIN
 # ─────────────────────────────────────────
@@ -159,8 +168,11 @@ def login(page) -> bool:
         if not filled_user:
             for inp in page.locator("input[type='text'], input:not([type])").all():
                 try:
-                    if inp.is_visible():
-                        inp.click(click_count=3); inp.fill(USERNAME)
+                    placeholder = inp.get_attribute("placeholder") or ""
+                    name = inp.get_attribute("name") or ""
+                    if inp.is_visible() and ("login" in placeholder.lower() or "login" in name.lower() or "user" in name.lower()):
+                        inp.click(click_count=3)
+                        inp.fill(USERNAME)
                         break
                 except: pass
 
@@ -309,6 +321,25 @@ def _find_nav_top(page, label: str):
     except: pass
     return None
 
+def recover_session(page):
+    """Try to recover by going back to homepage and re-navigating"""
+    print("  🔄 Recovering session...")
+    try:
+        page.goto(BASE_URL, timeout=30000)
+        page.wait_for_timeout(3000)
+        # Check if we got logged out
+        url = page.url.lower()
+        body = page.inner_text("body").lower()
+        if "login=1" in url or any(k in body for k in ["login id", "captcha", "password"]):
+            print("  🔐 Session expired — re-logging in...")
+            login(page)
+        else:
+            print("  ✅ Session recovered")
+        return True
+    except Exception as e:
+        print(f"  ⚠️  Recovery failed: {e}")
+        return False
+
 def nav_to_report(page, top_menu: str, sub_item: str):
     """Navigate top_menu → sub_item. sub_item can be a str or list of candidate strings."""
     candidates = sub_item if isinstance(sub_item, list) else [sub_item]
@@ -319,12 +350,12 @@ def nav_to_report(page, top_menu: str, sub_item: str):
             top = _find_nav_top(page, top_menu)
             if top is None:
                 print(f"  ⚠️  Top nav '{top_menu}' not found")
+                recover_session(page)
                 page.wait_for_timeout(2000)
                 continue
             top.hover()
-            page.wait_for_timeout(1500)  # wait for dropdown
+            page.wait_for_timeout(1500)
 
-            # Try all candidate names for sub-item
             sub = None
             for name in candidates:
                 for sel in [
@@ -342,7 +373,6 @@ def nav_to_report(page, top_menu: str, sub_item: str):
                 if sub:
                     break
 
-            # Last resort: scan all visible <a> links for case-insensitive match
             if sub is None:
                 for name in candidates:
                     try:
@@ -362,6 +392,8 @@ def nav_to_report(page, top_menu: str, sub_item: str):
                 print(f"  ⚠️  Sub-item not visible after hover (attempt {attempt})")
                 page.keyboard.press("Escape")
                 page.wait_for_timeout(1500)
+                if attempt == 2:
+                    recover_session(page)
                 continue
 
             sub.click()
@@ -371,6 +403,7 @@ def nav_to_report(page, top_menu: str, sub_item: str):
         except Exception as e:
             print(f"  ⚠️  Nav attempt {attempt} error: {e}")
             page.keyboard.press("Escape")
+            recover_session(page)
             page.wait_for_timeout(2000)
 
     print(f"  ❌ Failed to navigate: {top_menu} → {candidates[0]}")
@@ -810,6 +843,7 @@ def wait_and_save_download(page, prefix: str, timeout: int = 20000, date_tag: st
 
         dl   = dl_info.value
         ext  = os.path.splitext(dl.suggested_filename)[1] or ".xls"
+        delete_old_files(prefix)
         path = os.path.join(SAVE_DIR, f"{filename_base}{ext}")
         dl.save_as(path)
         print(f"  ✅ Saved: {path}")

@@ -37,10 +37,16 @@ def download_csv(page, folder, prefix):
 
     download = d.value
 
-    # 🔥 ONLY DATE (overwrite same day)
+    # Delete old file for this plant before saving new one
+    for fname in os.listdir(folder):
+        if fname.startswith(prefix) and fname.endswith(".csv"):
+            try:
+                os.remove(os.path.join(folder, fname))
+                print(f"  🗑️  Deleted old: {fname}")
+            except: pass
+
     filename = f"{prefix}_{datetime.now().strftime('%Y%m%d')}.csv"
     path = os.path.join(folder, filename)
-
     download.save_as(path)
     print(f"✅ Updated (overwritten): {path}")
 

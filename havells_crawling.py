@@ -40,14 +40,17 @@ def download_file(page, plant_name, folder_name):
 
     download = d.value
 
-    # 🔥 ONLY DATE (NO TIME → overwrite same file)
+    # Delete any old file for this plant before saving new one
+    folder_path = os.path.join(BASE_DIR, folder_name)
+    for fname in os.listdir(folder_path):
+        if fname.startswith(folder_name) and fname.endswith(".xlsx"):
+            try:
+                os.remove(os.path.join(folder_path, fname))
+                print(f"  🗑️  Deleted old: {fname}")
+            except: pass
+
     filename = f"{folder_name}_{datetime.now().strftime('%Y%m%d')}.xlsx"
     path = os.path.join(BASE_DIR, folder_name, filename)
-
-    # 🔥 Overwrite existing file
-    if os.path.exists(path):
-        os.remove(path)
-
     download.save_as(path)
     print(f"✅ Updated (overwritten): {path}")
 
